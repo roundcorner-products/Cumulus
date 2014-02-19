@@ -121,15 +121,37 @@
             <and>
               <!-- package is installed in org -->
               <not><equals arg1="${InstalledPackage.@{namespace}.versionNumber}" arg2="Not Installed" /></not>
+              <not><equals arg1="${InstalledPackage.@{namespace}.versionNumber}" arg2="@{version}" /></not>
             
               <!-- package needs downgrade or should be Not Installed -->
               <or>
+                <!-- if current package is a higher version than the requested version, we need to uninstall to downgrade -->
                 <bool><isgreaterthan arg1="${InstalledPackage.@{namespace}.versionNumber}" arg2="@{version}" /></bool>
+                <!-- if current package is a beta, any change requires uninstall -->
+                <contains string="${InstalledPackage.@{namespace}.versionNumber}" substring="Beta" />
+                <!-- if the package should be Not Installed, uninstall it -->
                 <equals arg1="@{version}" arg2="Not Installed" />
               </or>
             </and>
             <then>
-              <echo>Uninstalling @{namespace} ${InstalledPackage.@{namespace}.versionNumber} to downgrade to @{version}</echo>
+              <!-- Determine the right message -->
+              <if>
+                <contains string="${InstalledPackage.@{namespace}.versionNumber}" substring="Beta" />
+                <then>
+                  <echo>Uninstalling beta version @{namespace} ${InstalledPackage.@{namespace}.versionNumber} to install @{version}</echo>
+                </then>
+                <else>
+                  <if>
+                    <equals arg1="@{version}" arg2="Not Installed" />
+                    <then>
+                      <echo>Uninstalling @{namespace} ${InstalledPackage.@{namespace}.versionNumber}</echo>
+                    </then>
+                    <else>
+                      <echo>Uninstalling @{namespace} ${InstalledPackage.@{namespace}.versionNumber} to downgrade to @{version}</echo>
+                    </else>
+                  </if>
+                </else>
+              </if>
               <uninstallPackage namespace="@{namespace}" username="${sf.username}" password="${sf.password}"/>
             </then>
             <else>
