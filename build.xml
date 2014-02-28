@@ -70,10 +70,30 @@ npsp: ${InstalledPackage.npsp.versionNumber} (${version.npsp} required)
               <bool><isgreaterthan arg1="${InstalledPackage.npe03.versionNumber}" arg2="version.npe03" /></bool>
               <bool><isgreaterthan arg1="${InstalledPackage.npe4.versionNumber}" arg2="version.npe4" /></bool>
               <bool><isgreaterthan arg1="${InstalledPackage.npe5.versionNumber}" arg2="version.npe5" /></bool>
+              <and>
+                <contains string="${version.npe01}" substring="Beta" />
+                <not><equals arg1="${InstalledPackage.npe01.versionNumber}" arg2="version.npe01" /></not>
+              </and>
+              <and>
+                <contains string="${version.npo02}" substring="Beta" />
+                <not><equals arg1="${InstalledPackage.npo02.versionNumber}" arg2="version.npo02" /></not>
+              </and>
+              <and>
+                <contains string="${version.npe03}" substring="Beta" />
+                <not><equals arg1="${InstalledPackage.npe03.versionNumber}" arg2="version.npe03" /></not>
+              </and>
+              <and>
+                <contains string="${version.npe4}" substring="Beta" />
+                <not><equals arg1="${InstalledPackage.npe4.versionNumber}" arg2="version.npe4" /></not>
+              </and>
+              <and>
+                <contains string="${version.npe5}" substring="Beta" />
+                <not><equals arg1="${InstalledPackage.npe5.versionNumber}" arg2="version.npe5" /></not>
+              </and>
             </or>
           </and>
           <then>
-            <echo>Uninstalling npsp ${InstalledPackage.npsp.versionNumber} to allow for downgrade</echo>
+            <echo>Uninstalling npsp ${InstalledPackage.npsp.versionNumber} to allow for dependent package change</echo>
             <uninstallPackage namespace="npsp" username="${sf.username}" password="${sf.password}" />
 
             <!-- Override the cached installed version of npsp so we don't have to fetch versions again -->
